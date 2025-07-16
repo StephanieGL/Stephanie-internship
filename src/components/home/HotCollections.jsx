@@ -23,17 +23,14 @@ const HotCollections = () => {
   };
 
   async function fetchCollections() {
-    console.log("Attempting to fetch collections..."); // DEBUG LOG
     try {
       const { data } = await axios.get(
         "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
       );
-      console.log("SUCCESS: Data fetched from API:", data); // DEBUG LOG
       setCollections(data);
     } catch (error) {
-      console.error("ERROR: Failed to fetch collections:", error); // DEBUG LOG
+      console.error("Error fetching hot collections:", error);
     } finally {
-      console.log("Setting loading to false."); // DEBUG LOG
       setLoading(false);
     }
   }
@@ -42,9 +39,6 @@ const HotCollections = () => {
     fetchCollections();
   }, []);
 
-  console.log("Component is rendering. Loading state:", loading, "Collections count:", collections.length); // DEBUG LOG
-
-  // --- No changes to the return statement ---
   return (
     <section id="section-collections" className="no-bottom">
       <div className="container">
@@ -55,14 +49,14 @@ const HotCollections = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          {loading ? (
-            <OwlCarousel className="owl-theme" {...owlOptions}>
-              {new Array(4).fill(0).map((_, index) => (
-                <div key={index}>
-                  <Skeleton width="100%" height="350px" />
-                </div>
-              ))}
-            </OwlCarousel>
+          {loading || collections.length === 0 ? (
+            <div className="row">
+                {new Array(4).fill(0).map((_, index) => (
+                    <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
+                        <Skeleton width="100%" height="250px" />
+                    </div>
+                ))}
+            </div>
           ) : (
             <OwlCarousel className="owl-theme" {...owlOptions}>
               {collections.map((collection) => (
