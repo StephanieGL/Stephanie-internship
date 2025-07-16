@@ -5,7 +5,7 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import axios from "axios";
 import Skeleton from "../UI/Skeleton";
-import useCountdown from "../hooks/useCountdown";
+import Countdown from "../UI/Countdown"; // <-- Import the new component
 
 const NewItems = () => {
   const [newItems, setNewItems] = useState([]);
@@ -23,27 +23,21 @@ const NewItems = () => {
     },
   };
 
-  async function fetchNewItems() {
-    try {
-      const { data } = await axios.get(
-        "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
-      );
-      setNewItems(data);
-    } catch (error) {
-      console.error("Error fetching new items:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function fetchNewItems() {
+      try {
+        const { data } = await axios.get(
+          "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
+        );
+        setNewItems(data);
+      } catch (error) {
+        console.error("Error fetching new items:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
     fetchNewItems();
   }, []);
-
-  const Countdown = ({ expiryDate }) => {
-    const { hours, minutes, seconds } = useCountdown(expiryDate);
-    return <div className="de_countdown">{`${hours}h ${minutes}m ${seconds}s`}</div>;
-  };
 
   return (
     <section id="section-items" className="no-bottom">
@@ -57,11 +51,11 @@ const NewItems = () => {
           </div>
           {loading || newItems.length === 0 ? (
             <div className="row">
-                {new Array(4).fill(0).map((_, index) => (
-                    <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
-                        <Skeleton width="100%" height="400px" />
-                    </div>
-                ))}
+              {new Array(4).fill(0).map((_, index) => (
+                <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
+                  <Skeleton width="100%" height="400px" />
+                </div>
+              ))}
             </div>
           ) : (
             <OwlCarousel className="owl-theme" {...owlOptions}>
@@ -74,14 +68,15 @@ const NewItems = () => {
                         <i className="fa fa-check"></i>
                       </Link>
                     </div>
+                    {/* Use the new Countdown component */}
                     {item.expiryDate && <Countdown expiryDate={item.expiryDate} />}
                     <div className="nft__item_wrap">
-                      <Link to={`/item-details/${item.nftId}`}>
+                      <Link to={`/item-details/${item.id}`}>
                         <img src={item.nftImage} className="lazy nft__item_preview" alt="" />
                       </Link>
                     </div>
                     <div className="nft__item_info">
-                      <Link to={`/item-details/${item.nftId}`}>
+                      <Link to={`/item-details/${item.id}`}>
                         <h4>{item.title}</h4>
                       </Link>
                       <div className="nft__item_price">{item.price} ETH</div>
