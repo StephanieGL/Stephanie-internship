@@ -48,11 +48,6 @@ const Author = () => {
                 </div>
               </div>
             </div>
-            <div className="profile_follow de-flex">
-              <div className="de-flex-col">
-                <Skeleton width="120px" height="40px" />
-              </div>
-            </div>
           </div>
         </div>
         <div className="col-md-12">
@@ -61,23 +56,7 @@ const Author = () => {
               <div className="row">
                 {new Array(8).fill(0).map((_, index) => (
                   <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
-                    <div className="nft__item">
-                        <div className="author_list_pp">
-                            <Skeleton width="50px" height="50px" borderRadius="50%"/>
-                        </div>
-                        <div className="nft__item_wrap" style={{marginTop: "10px"}}>
-                            <Skeleton width="100%" height="200px"/>
-                        </div>
-                        <div className="nft__item_info">
-                            <Skeleton width="120px" height="20px"/>
-                            <div className="nft__item_price">
-                                <Skeleton width="60px" height="20px"/>
-                            </div>
-                            <div className="nft__item_like">
-                                <Skeleton width="40px" height="20px"/>
-                            </div>
-                        </div>
-                    </div>
+                    <Skeleton width="100%" height="400px" />
                   </div>
                 ))}
               </div>
@@ -143,7 +122,7 @@ const Author = () => {
                     <div className="de_tab tab_simple">
                       <div className="de_tab_content">
                         <div className="row">
-                          {author.nftCollection.map((nft) => (
+                          {author.nftCollection && author.nftCollection.map((nft) => (
                             <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={nft.id}>
                               <AuthorItems {...nft} />
                             </div>
