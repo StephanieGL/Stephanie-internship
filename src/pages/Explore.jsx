@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SubHeader from "../images/subheader.jpg";
 import ExploreItems from "../components/explore/ExploreItems";
 import axios from "axios";
-import Skeleton from "../components/UI/LoadSkeleton";
+import Skeleton from "../components/UI/Skeleton";
 
 const Explore = () => {
   const [exploreItems, setExploreItems] = useState([]);
