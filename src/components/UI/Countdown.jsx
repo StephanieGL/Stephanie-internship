@@ -1,48 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
 
-// This custom hook contains the core countdown logic.
-const useCountdown = (expiryTimestamp) => {
-  const [timeLeft, setTimeLeft] = useState(expiryTimestamp - Date.now());
+const Countdown = ({ expiryDate }) => {
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const formatTime = (timeLeft) => {
+    if (timeLeft <= 0) {
+      return "Expired";
+    }
+    const hours = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    return ` ${hours}h ${minutes}m ${seconds}s`;
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newTimeLeft = expiryTimestamp - Date.now();
-      // Stop the interval if the countdown is finished
-      if (newTimeLeft <= 0) {
-        clearInterval(interval);
-        setTimeLeft(0);
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const difference = expiryDate - now;
+      if (difference > 0) {
+        setTimeLeft(difference);
       } else {
-        setTimeLeft(newTimeLeft);
+        setTimeLeft(0);
+        clearInterval(timer);
       }
     }, 1000);
 
-    // Clear the interval when the component is unmounted
-    return () => clearInterval(interval);
-  }, [expiryTimestamp]);
+    const initialDifference = expiryDate - Date.now();
+    setTimeLeft(Math.max(initialDifference, 0));
 
-  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
-  const seconds = Math.floor((timeLeft / 1000) % 60);
+    return () => clearInterval(timer);
+  }, [expiryDate]);
 
-  return { days, hours, minutes, seconds };
-};
-
-
-// This is the reusable UI component.
-const Countdown = ({ expiryDate }) => {
-  const { days, hours, minutes, seconds } = useCountdown(expiryDate);
-
-  if (days + hours + minutes + seconds <= 0) {
-    return null; // Don't render anything if the countdown is over
-  }
-
-  return (
-    <div className="de_countdown">
-      {days > 0 && `${days}d `}
-      {`${hours}h ${minutes}m ${seconds}s`}
-    </div>
-  );
+  return <div className="de_countdown">{formatTime(timeLeft)}</div>;
 };
 
 export default Countdown;

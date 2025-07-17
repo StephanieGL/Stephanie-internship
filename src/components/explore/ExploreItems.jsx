@@ -339,7 +339,7 @@ const ExploreItems = () => {
               </div>
             </div>
           ))}
-          // Load more button
+          {/* Load more button */}
       {displayCount < items.length && (
         <div className="col-md-12 text-center">
           <Link
